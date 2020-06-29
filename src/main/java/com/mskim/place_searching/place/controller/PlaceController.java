@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("/place")
+@RequestMapping({"", "/", "/view/place"})
 public class PlaceController {
 
     @GetMapping("")
     public String index() {
-        return "index";
+        return "layout/index";
     }
 
 }
