@@ -52,7 +52,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                                                 .orElseThrow(() -> new UsernameNotFoundException(account));
                 System.out.println("===================> Member: " + member);
                 Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-                grantedAuthorities.add(new SimpleGrantedAuthority("user"));
+                grantedAuthorities.add(new SimpleGrantedAuthority(Role.USER.getValue()));
 
                 return new User(member.getAccount(), member.getPassword(), grantedAuthorities);
             }
