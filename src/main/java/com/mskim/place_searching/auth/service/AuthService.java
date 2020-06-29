@@ -22,11 +22,4 @@ public class AuthService {
         member.changePassword(this.passwordEncoder.encode(member.getPassword()));
         return this.authRepository.save(member) != null ? true : false;
     }
-
-    public boolean signIn(Member member) {
-        Member registeredMember = this.authRepository.findByAccount(member.getAccount())
-                .orElseThrow(() -> new UsernameNotFoundException(member.getAccount()));
-
-        return this.passwordEncoder.matches(member.getPassword(), registeredMember.getPassword());
-    }
 }

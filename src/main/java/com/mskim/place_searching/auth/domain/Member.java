@@ -19,7 +19,6 @@ import javax.persistence.Table;
 @Table(name = "t_member")
 @Getter
 @ToString //TODO: For logging
-@EqualsAndHashCode(of = {"account", "password"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 

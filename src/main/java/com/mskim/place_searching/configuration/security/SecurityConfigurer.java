@@ -2,18 +2,15 @@ package com.mskim.place_searching.configuration.security;
 
 import com.mskim.place_searching.auth.AuthRepository;
 import com.mskim.place_searching.auth.domain.Member;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -29,8 +26,14 @@ import java.util.Set;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final AuthRepository authRepository;
+    private static final String LOGIN_URL_PATH = "/view/auth/sign_in";
+    private static final String LOGIN_PROCESS_URL_PATH = "/auth/validation";
+    private static final String LOGOUT_URL_PATH = "/auth/sign_out";
+    private static final String DEFAULT_REDIRECT_URL = "/";
+    private static final String ERROR_URL_PATH = "/error";
+    private static final String USERNAME_KEY = "id";
+    private static final String PASSWORD_KEY = "password";
 
     @Autowired
     public SecurityConfigurer(AuthRepository authRepository) {
@@ -44,13 +47,18 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    public void configure(WebSecurity web) throws Exception {
+        // SecurityFilterChain ignores check to static resources path
+        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
+
+    @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String account) throws UsernameNotFoundException {
                 Member member = authRepository.findByAccount(account)
                                                 .orElseThrow(() -> new UsernameNotFoundException(account));
-                System.out.println("===================> Member: " + member);
                 Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
                 grantedAuthorities.add(new SimpleGrantedAuthority(Role.USER.getValue()));
 
@@ -62,16 +70,21 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/auth/sign_in",
-                         "/h2/**", "/favicon.ico").permitAll()
+            .antMatchers("/h2/**",
+                         LOGIN_URL_PATH).permitAll()
             .anyRequest().authenticated()
             .and()
-            .formLogin().usernameParameter("id") // Parameter is received from view
-                        .passwordParameter("password")
-                        .loginPage("/auth/sign_in")
-                        .loginProcessingUrl("/auth/validation") // Request receiving  from form submit
-                        .successHandler(new SignInSuccessHandler("/"));
-//                        .and().exceptionHandling().authenticationEntryPoint();
-//                        .failureForwardUrl("/error");
+                .formLogin().usernameParameter(USERNAME_KEY) // Parameter is received from view
+                            .passwordParameter(PASSWORD_KEY)
+                            .loginPage(LOGIN_URL_PATH)
+                            .loginProcessingUrl(LOGIN_PROCESS_URL_PATH) // Request receiving  from form submit
+                            .successHandler(new SignInSuccessHandler(DEFAULT_REDIRECT_URL))
+                            .failureHandler(new SignInFailureHandler(LOGIN_URL_PATH, USERNAME_KEY))
+            .and()
+                .logout().logoutUrl(LOGOUT_URL_PATH)
+                .clearAuthentication(true) // Authentication object remove from securityContext
+                .invalidateHttpSession(true) // HttpSession remove
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessUrl(LOGIN_URL_PATH);
     }
 }
