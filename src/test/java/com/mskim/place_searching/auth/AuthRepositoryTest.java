@@ -2,57 +2,61 @@ package com.mskim.place_searching.auth;
 
 import com.mskim.place_searching.auth.domain.Member;
 import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.BDDAssertions.thenThrownBy;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@DataJpaTest
 class AuthRepositoryTest {
     private final AuthRepository authRepository;
-    private final PasswordEncoder passwordEncoder;
+
+    private Member member;
 
     @Autowired
-    public AuthRepositoryTest(AuthRepository authRepository, PasswordEncoder passwordEncoder) {
+    public AuthRepositoryTest(AuthRepository authRepository) {
         this.authRepository = authRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
-    @Test
-    void registerMemberTest() {
-        // given
-        Member member = Member.builder()
+    @BeforeEach
+    void setUp() {
+        member = Member.builder()
                 .account("test")
-                .password(this.passwordEncoder.encode("test1"))
+                .password("test1")
                 .build();
-
-        // when
-        member = this.authRepository.save(member);
-
-        // then
-        then(member).isNotNull();
-        then(member.getMemberId()).isGreaterThan(0);
-        then(member.getAccount()).isEqualTo("test");
-        then(this.passwordEncoder.matches("test1", member.getPassword())).isTrue();
     }
 
     @Test
-    void retrieveInitializedMemberTest() {
-        // given
-        String targetAccount = "chyin370";
+    void AuthRepository_사용자_등록() {
+        final Member savedMember = this.authRepository.save(member);
 
-        // when
-        Member member = this.authRepository.findByAccount(targetAccount)
-                .orElseThrow(() -> new UsernameNotFoundException(targetAccount));
+        then(savedMember).isNotNull();
+        then(savedMember.getMemberId()).isNotZero().isGreaterThan(0);
+        then(savedMember.getAccount()).isEqualTo("test");
+        then(savedMember.getPassword()).isEqualTo("test1");
+    }
 
-        // then
-        then(member.getMemberId()).isGreaterThan(0);
-        // passwordEncoder.mathces("Confirm String", "Encoded String");
-        then(this.passwordEncoder.matches("test", member.getPassword())).isTrue();
+    @Test
+    void AuthRepository_사용자_조회() {
+        final Member retrievedMember = this.authRepository.findByAccount(member.getAccount()).orElse(null);
+
+        then(retrievedMember).isNotNull();
+        then(retrievedMember.getMemberId()).isNotZero().isGreaterThan(0);
+        then(retrievedMember.getAccount()).isNotBlank().isEqualTo("test");
+        then(retrievedMember.getPassword()).isNotBlank().isEqualTo("test1");
+    }
+
+    @Test
+    void AuthRepository_유효하지_않은_사용자_조회() {
+        final Member retrievedMember = this.authRepository.findByAccount(any(String.class)).orElse(null);
+
+        then(retrievedMember).isNull();
     }
 }

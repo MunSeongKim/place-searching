@@ -53,17 +53,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String account) throws UsernameNotFoundException {
-                Member member = authRepository.findByAccount(account)
-                                                .orElseThrow(() -> new UsernameNotFoundException(account));
-                Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-                grantedAuthorities.add(new SimpleGrantedAuthority(Role.USER.getValue()));
-
-                return new User(member.getAccount(), member.getPassword(), grantedAuthorities);
-            }
-        }).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -85,5 +75,20 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true) // HttpSession remove
                 .deleteCookies("JSESSIONID")
                 .logoutSuccessUrl(LOGIN_URL_PATH);
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new UserDetailsService() {
+            @Override
+            public UserDetails loadUserByUsername(String account) throws UsernameNotFoundException {
+                Member member = authRepository.findByAccount(account)
+                        .orElseThrow(() -> new UsernameNotFoundException(account));
+                Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+                grantedAuthorities.add(new SimpleGrantedAuthority(Role.USER.getValue()));
+
+                return new User(member.getAccount(), member.getPassword(), grantedAuthorities);
+            }
+        };
     }
 }
