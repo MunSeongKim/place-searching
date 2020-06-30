@@ -18,16 +18,16 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "t_member")
 @Getter
-@ToString //TODO: For logging
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
-    @Column(length = 50, unique = true, updatable = false)
+    @Column(length = 50, nullable = false, unique = true, updatable = false)
     private String account;
-    @Column
+    @Column(nullable = false)
     private String password;
 
     @Builder

@@ -3,11 +3,9 @@ package com.mskim.place_searching.configuration.security;
 import com.mskim.place_searching.auth.AuthRepository;
 import com.mskim.place_searching.auth.domain.Member;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -39,7 +37,6 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public SecurityConfigurer(AuthRepository authRepository) {
-        super();
         this.authRepository = authRepository;
     }
 

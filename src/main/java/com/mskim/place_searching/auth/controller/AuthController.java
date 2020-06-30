@@ -18,8 +18,6 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/view/auth")
 public class AuthController {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final AuthService authService;
 
     @Autowired
