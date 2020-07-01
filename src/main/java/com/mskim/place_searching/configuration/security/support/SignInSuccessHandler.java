@@ -1,4 +1,4 @@
-package com.mskim.place_searching.configuration.security;
+package com.mskim.place_searching.configuration.security.support;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;

@@ -1,4 +1,4 @@
-package com.mskim.place_searching.configuration.security;
+package com.mskim.place_searching.configuration.security.support;
 
 import lombok.Getter;
 
