@@ -1,20 +1,15 @@
 package com.mskim.place_searching.place.support.page;
 
-import com.mskim.place_searching.place.service.PlaceService;
-import lombok.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @ToString
 @Builder
 @AllArgsConstructor
 public class PlacePager {
-    private final Logger logger = LoggerFactory.getLogger(PlacePager.class);
-
     public static final int MAX_PAGE_COUNT = 45;
     private static final int DEFAULT_PAGE_NUMBER = 1;
     private static final int DISPLAY_PAGE_COUNT = 3;
@@ -74,11 +69,9 @@ public class PlacePager {
 
     private void setTotalPageCount() {
         totalPageCount = totalItemCount / displayItemCount;
-        logger.info("before: " + totalPageCount);
         if ((totalItemCount % displayItemCount) != 0) {
             totalPageCount = totalPageCount + 1;
         }
-        logger.info("after: " + totalPageCount);
     }
 
     private void updateNavigator() {

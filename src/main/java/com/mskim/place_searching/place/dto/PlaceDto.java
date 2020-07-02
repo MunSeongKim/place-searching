@@ -4,10 +4,12 @@ import com.mskim.place_searching.place.support.page.PlacePager;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
+@ToString
 @NoArgsConstructor
 public class PlaceDto {
     private List<Place> Places;

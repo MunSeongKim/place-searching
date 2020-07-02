@@ -52,7 +52,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         // SecurityFilterChain ignores check to static resources path
-        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+        web.ignoring().antMatchers("/static/**", "/**/favicon.ico");
     }
 
     @Override
@@ -63,22 +63,25 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/h2/**",
-                         LOGIN_URL_PATH).permitAll()
-            .anyRequest().authenticated()
-            .and()
-                .formLogin().usernameParameter(USERNAME_KEY) // Parameter is received from view
-                            .passwordParameter(PASSWORD_KEY)
-                            .loginPage(LOGIN_URL_PATH)
-                            .loginProcessingUrl(LOGIN_PROCESS_URL_PATH) // Request receiving  from form submit
-                            .successHandler(new SignInSuccessHandler(SUCCESS_REDIRECT_URL))
-                            .failureHandler(new SignInFailureHandler(LOGIN_URL_PATH))
-            .and()
-                .logout().logoutUrl(LOGOUT_URL_PATH)
-                .clearAuthentication(true) // Authentication object remove from securityContext
-                .invalidateHttpSession(true) // HttpSession remove
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl(LOGIN_URL_PATH);
+                .antMatchers( "/static/**",
+                             "/**/favicon.ico",
+                             "/error",
+                             "/h2/**",
+                             LOGIN_URL_PATH).permitAll()
+                .anyRequest().authenticated()
+                .and()
+                    .formLogin().usernameParameter(USERNAME_KEY) // Parameter is received from view
+                                .passwordParameter(PASSWORD_KEY)
+                                .loginPage(LOGIN_URL_PATH)
+                                .loginProcessingUrl(LOGIN_PROCESS_URL_PATH) // Request receiving  from form submit
+                                .successHandler(new SignInSuccessHandler(SUCCESS_REDIRECT_URL))
+                                .failureHandler(new SignInFailureHandler(LOGIN_URL_PATH))
+                .and()
+                    .logout().logoutUrl(LOGOUT_URL_PATH)
+                    .clearAuthentication(true) // Authentication object remove from securityContext
+                    .invalidateHttpSession(true) // HttpSession remove
+                    .deleteCookies("JSESSIONID")
+                    .logoutSuccessUrl(LOGIN_URL_PATH);
     }
 
     @Bean

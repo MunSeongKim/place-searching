@@ -15,20 +15,22 @@ public class Keyword {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long keywordId;
+    @Column(name = "keyword_id")
+    private Long id;
     @Column(nullable = false, unique = true, updatable = false)
     private String value;
     @Column(nullable = false)
     private Integer count;
 
     @Builder
-    public Keyword(String value, Integer count) {
+    public Keyword(String value) {
         this.value = value;
-        this.count = count;
     }
 
-    public void increaseCount() {
+    public Keyword increaseCount() {
         this.count = this.count + 1;
+
+        return this;
     }
 
     @PrePersist

@@ -1,8 +1,6 @@
 package com.mskim.place_searching.place.support.client;
 
 import com.mskim.place_searching.support.rest.client.RestClientTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -11,8 +9,6 @@ import java.util.Map;
 
 @Component
 public class KakaoMapSearchRestClient extends RestClientTemplate {
-    private final Logger logger = LoggerFactory.getLogger(KakaoMapSearchRestClient.class);
-
     private static final String KAKAO_SEARCH_PLACE_PATH = "/v2/local/search/keyword.json";
 
     public KakaoMapSearchRestClient(@Value("${kakao.client.key}") String kakaoClientKey,
