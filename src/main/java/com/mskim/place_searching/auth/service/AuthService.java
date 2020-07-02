@@ -1,6 +1,6 @@
 package com.mskim.place_searching.auth.service;
 
-import com.mskim.place_searching.auth.AuthRepository;
+import com.mskim.place_searching.auth.repository.AuthRepository;
 import com.mskim.place_searching.auth.domain.Member;
 import com.mskim.place_searching.configuration.security.support.SecurityConstant;
 import org.springframework.beans.factory.annotation.Autowired;

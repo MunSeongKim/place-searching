@@ -1,6 +1,6 @@
 package com.mskim.place_searching.configuration.security;
 
-import com.mskim.place_searching.auth.AuthRepository;
+import com.mskim.place_searching.auth.repository.AuthRepository;
 import com.mskim.place_searching.auth.domain.Member;
 import com.mskim.place_searching.configuration.security.support.Role;
 import com.mskim.place_searching.configuration.security.support.SecurityConstant;

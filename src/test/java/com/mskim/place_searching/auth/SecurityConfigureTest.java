@@ -1,6 +1,7 @@
 package com.mskim.place_searching.auth;
 
 import com.mskim.place_searching.auth.controller.AuthController;
+import com.mskim.place_searching.auth.repository.AuthRepository;
 import com.mskim.place_searching.auth.service.AuthService;
 import com.mskim.place_searching.place.controller.PlaceController;
 import org.junit.jupiter.api.BeforeEach;

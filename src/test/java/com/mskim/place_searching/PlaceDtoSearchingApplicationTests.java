@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-class PlaceSearchingApplicationTests {
+class PlaceDtoSearchingApplicationTests {
 	@Autowired
 	private WebApplicationContext context;
 

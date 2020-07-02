@@ -1,54 +1,109 @@
 package com.mskim.place_searching.place.service;
 
-import com.mskim.place_searching.configuration.restapi.client.support.KakaoRestTemplate;
 import com.mskim.place_searching.place.dto.Place;
-import com.mskim.place_searching.place.dto.Places;
+import com.mskim.place_searching.place.dto.PlaceDto;
+import com.mskim.place_searching.place.support.client.KakaoMapSearchRestClient;
+import com.mskim.place_searching.place.support.page.PlacePager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PlaceService {
     private final Logger logger = LoggerFactory.getLogger(PlaceService.class);
-    private static final String KAKAO_SEARCH_PLACE_PATH = "/v2/local/search/keyword.json";
 
-    private final KakaoRestTemplate kakaoRestTemplate;
+    private final KakaoMapSearchRestClient client;
 
-    @Value("${kakao.domain.map}")
-    private String kakaoMapDomain;
+    private boolean isNewKeyword;
+    private String keyword;
+    private PlacePager placePager;
 
     @Autowired
-    public PlaceService(KakaoRestTemplate kakaoRestTemplate) {
-        this.kakaoRestTemplate = kakaoRestTemplate;
+    public PlaceService(KakaoMapSearchRestClient client) {
+        this.client = client;
+        this.isNewKeyword = true;
     }
 
-    public Places retrievePlace(String placeName) {
-        String endpointUrlWithParams = UriComponentsBuilder.fromHttpUrl(kakaoMapDomain)
-                .path(KAKAO_SEARCH_PLACE_PATH)
-                .queryParam("query", placeName)
-                .build().toUriString();
+    public PlaceDto retrievePlace(String placeName, int page, int size) {
+        updateKeywordState(placeName);
 
-        ResponseEntity<Map> response = kakaoRestTemplate.getForEntity(endpointUrlWithParams, Map.class);
-        Map<String, Object> result = response.getBody();
-        List<Map<String, Object>> placeList = (List) result.get("documents");
+        MultiValueMap params = createParams(placeName, page, size);
+        Map response = (Map) client.setParams(params).getListAsEntity();
 
-        Places places = new Places();
-        placeList.stream().forEach((item) -> {
-            String itemPlaceName = (String) item.get("place_name");
-            places.add(Place.builder().name(itemPlaceName).build());
-        });
+        this.placePager = updatePager(placeName, page, size);
 
-        return places;
+        return PlaceDto.builder()
+                .places(parsePlaceData(response))
+                .pager(this.placePager)
+                .build();
+    }
+
+    private List<Place> parsePlaceData(Map response) {
+        List<Map<String, String>> placeList = (List) response.get("documents");
+
+        return placeList.stream()
+                .map((item) -> Place.builder()
+                        .id(item.get("id"))
+                        .name(item.get("place_name"))
+                        .address(item.get("address_name"))
+                        .roadAddress(item.get("road_address_name"))
+                        .phone(item.get("phone"))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, Object> parseMetadata(Map response) {
+        return (Map) response.get("meta");
+    }
+
+    private PlacePager updatePager(String keyword, int page, int size) {
+        if (isNewKeyword) {
+            return initializePager(keyword, size);
+        }
+
+        return this.placePager.update(page);
+    }
+
+    private PlacePager initializePager(String keyword, int size) {
+        MultiValueMap params = createParams(keyword, PlacePager.MAX_PAGE_COUNT, size);
+
+        // new pager
+        Map<String, Object> response = (Map) client.setParams(params).getListAsEntity();
+        Map<String, Object> meta = parseMetadata(response);
+
+        logger.info("=========> " + meta.get("pageable_count"));
+        Integer totalItemCount = (Integer) meta.get("pageable_count");
+
+        return PlacePager.builder()
+                .displayItemCount(size)
+                .totalItemCount(totalItemCount)
+                .build().update();
+    }
+
+    private void updateKeywordState(String newKeyword) {
+        if (newKeyword.equals(keyword)) {
+            isNewKeyword = false;
+            return;
+        }
+
+        keyword = newKeyword;
+        isNewKeyword = true;
+    }
+
+    private MultiValueMap createParams(String placeName, Integer page, Integer size) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("query", placeName);
+        params.add("page", page.toString());
+        params.add("size", size.toString());
+
+        return params;
     }
 
 }

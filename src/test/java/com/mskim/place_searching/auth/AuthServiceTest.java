@@ -1,6 +1,7 @@
 package com.mskim.place_searching.auth;
 
 import com.mskim.place_searching.auth.domain.Member;
+import com.mskim.place_searching.auth.repository.AuthRepository;
 import com.mskim.place_searching.auth.service.AuthService;
 import static org.assertj.core.api.BDDAssertions.then;
 import org.junit.jupiter.api.BeforeEach;

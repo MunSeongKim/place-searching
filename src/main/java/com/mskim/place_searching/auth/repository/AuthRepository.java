@@ -1,4 +1,4 @@
-package com.mskim.place_searching.auth;
+package com.mskim.place_searching.auth.repository;
 
 import com.mskim.place_searching.auth.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
