@@ -18,7 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(AuthController.class)
-@Transactional
 class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;

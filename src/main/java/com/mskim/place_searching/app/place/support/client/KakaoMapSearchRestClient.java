@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -15,10 +16,13 @@ public class KakaoMapSearchRestClient extends RestClientTemplate {
                                     @Value("${kakao.domain.map}") String kakaoMapDomain) {
         super();
 
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-type", "application/json;charset=UTF-8");
+        headers.put("Authorization", "KakaoAK " + kakaoClientKey);
+
         this.setDomainUrl(kakaoMapDomain)
             .setPath(KAKAO_SEARCH_PLACE_PATH)
-            .setHeaders(Map.of("Content-type", "application/json;charset=UTF-8",
-                                "Authorization", "KakaoAK " + kakaoClientKey));
+            .setHeaders(headers);
     }
 
     @Override

@@ -6,27 +6,31 @@ import com.mskim.place_searching.app.auth.service.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
 
-@SpringBootTest
-@Transactional
+@DataJpaTest
+@WebAppConfiguration
 class AuthServiceTest {
+    @Autowired
+    ApplicationContext context;
+
     private final AuthService authService;
     private final AuthRepository authRepository;
     private final PasswordEncoder passwordEncoder;
 
     private Member member;
 
-    @Autowired
-    public AuthServiceTest(AuthService authService, AuthRepository authRepository, PasswordEncoder passwordEncoder) {
-        this.authService = authService;
-        this.authRepository = authRepository;
-        this.passwordEncoder = passwordEncoder;
+    public AuthServiceTest(AuthRepository authRepository) {
+        this.authService = context.getBean(AuthService.class);
+        this.authRepository = context.getBean(AuthRepository.class);
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @BeforeEach

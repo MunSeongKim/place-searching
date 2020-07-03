@@ -13,7 +13,6 @@ import static org.mockito.ArgumentMatchers.any;
 
 
 @DataJpaTest
-@Transactional
 class AuthRepositoryTest {
     private final AuthRepository authRepository;
 
@@ -44,8 +43,13 @@ class AuthRepositoryTest {
 
     @Test
     void AuthRepository_사용자_조회() {
+        // given
+        this.authRepository.save(member);
+
+        // when
         final Member retrievedMember = this.authRepository.findByAccount(member.getAccount()).orElse(null);
 
+        // then
         then(retrievedMember).isNotNull();
         then(retrievedMember.getMemberId()).isNotZero().isGreaterThan(0);
         then(retrievedMember.getAccount()).isNotBlank().isEqualTo("test");
