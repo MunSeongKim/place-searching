@@ -23,7 +23,7 @@ public class UserInitializationRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         Member member = Member.builder()
-                .account("chyin370")
+                .account("munseong.kim")
                 .password("test")
                 .build();
 
