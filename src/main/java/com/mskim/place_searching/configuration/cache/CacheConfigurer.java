@@ -12,7 +12,7 @@ public class CacheConfigurer {
 
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager("place", "places");
+        return new ConcurrentMapCacheManager("place", "places", "keyword");
     }
 
 }

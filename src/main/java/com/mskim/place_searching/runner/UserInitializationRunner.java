@@ -1,7 +1,7 @@
 package com.mskim.place_searching.runner;
 
-import com.mskim.place_searching.auth.domain.Member;
-import com.mskim.place_searching.auth.service.AuthService;
+import com.mskim.place_searching.app.auth.domain.Member;
+import com.mskim.place_searching.app.auth.service.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
