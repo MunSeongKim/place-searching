@@ -15,7 +15,7 @@
     - `mvn spring-boot:run`
 > 1, 2번의 방법이 불가능 할 경우 아래의 방법으로 실행하시면 됩니다.
 >
-> [place-searching.jar download](https://github.com/MunSeongKim/place-searching/blob/master/dist/place-searching-0.0.1-SNAPSHOT.jar) 후
+> [place-searching.jar download](https://github.com/MunSeongKim/place-searching/raw/master/dist/place-searching-0.0.1-SNAPSHOT.jar) 후
 > `java -jar place-searching-0.0.1-SNAPSHOT.jar`
     
 - 실행 후 http://localhost:8080으로 접속 가능합니다.
