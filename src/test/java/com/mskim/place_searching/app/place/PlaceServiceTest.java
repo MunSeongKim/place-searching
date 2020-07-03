@@ -7,22 +7,24 @@ import com.mskim.place_searching.app.place.dto.PlaceDto;
 import com.mskim.place_searching.app.place.service.PlaceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.cache.CacheManager;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest
+@Transactional
 class PlaceServiceTest {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    private CacheManager cacheManager;
     @Autowired
     private PlaceService placeService;
     @Autowired

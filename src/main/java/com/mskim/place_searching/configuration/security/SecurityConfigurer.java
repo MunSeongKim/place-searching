@@ -65,7 +65,6 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers( "/static/**",
                              "/**/favicon.ico",
                              "/error",
-                             "/h2/**",
                              LOGIN_URL_PATH).permitAll()
                 .anyRequest().authenticated()
                 .and()

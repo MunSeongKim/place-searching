@@ -1,21 +1,24 @@
 package com.mskim.place_searching;
 
 import com.mskim.place_searching.app.keyword.domain.Keyword;
+import com.mskim.place_searching.app.place.controller.PlaceController;
 import com.mskim.place_searching.app.place.dto.Place;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.*;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.annotation.Repeat;
+import org.springframework.test.context.event.annotation.BeforeTestMethod;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
@@ -33,9 +36,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Integration Test
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureJsonTesters
+@Transactional
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PlaceSearchingApplicationTests {
 	@Autowired
 	private WebApplicationContext context;
@@ -48,10 +52,8 @@ class PlaceSearchingApplicationTests {
 
 	private MockMvc mockMvc;
 
-
-
 	@BeforeEach
-	void setUp() {
+	void setUp() throws Exception {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context)
 				.apply(springSecurity())
 				.build();
@@ -128,18 +130,20 @@ class PlaceSearchingApplicationTests {
 	@WithMockUser
 	@Order(6)
 	void 인기_키워드_조회() throws Exception {
+		// when
 		MvcResult result = mockMvc.perform(get("/api/keywords/hot").characterEncoding("UTF-8"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andReturn();
 
+		// then
 		then(result.getResponse().getContentAsString()).isNotNull();
 
 		List<Keyword> keywords = keywordsJson.parseObject(result.getResponse().getContentAsString());
 
 		then(keywords).isNotNull();
 		then(keywords.get(0).getValue()).isEqualTo("서울역");
-		then(keywords.get(0).getCount()).isEqualTo(1);
+		then(keywords.get(0).getCount()).isGreaterThanOrEqualTo(1);
 	}
 
 	@Test

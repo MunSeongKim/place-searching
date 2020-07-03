@@ -5,19 +5,18 @@ import com.mskim.place_searching.app.keyword.repository.KeywordRepository;
 import com.mskim.place_searching.app.keyword.service.KeywordService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 class KeywordServiceTest {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -50,9 +49,9 @@ class KeywordServiceTest {
         then(keywords).isNotNull();
         then(keywords.size()).isEqualTo(2);
         then(keywords.get(0).getValue()).isEqualTo(placeName1);
-        then(keywords.get(0).getCount()).isEqualTo(2);
+        then(keywords.get(0).getCount()).isGreaterThanOrEqualTo(2);
         then(keywords.get(1).getValue()).isEqualTo(placeName2);
-        then(keywords.get(1).getCount()).isEqualTo(1);
+        then(keywords.get(1).getCount()).isGreaterThanOrEqualTo(1);
     }
 
 }

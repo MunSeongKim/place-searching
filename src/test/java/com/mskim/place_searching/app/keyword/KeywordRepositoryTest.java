@@ -4,19 +4,18 @@ import com.mskim.place_searching.app.keyword.domain.Keyword;
 import com.mskim.place_searching.app.keyword.repository.KeywordRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-@ExtendWith(SpringExtension.class)
 @DataJpaTest
+@Transactional
 class KeywordRepositoryTest {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

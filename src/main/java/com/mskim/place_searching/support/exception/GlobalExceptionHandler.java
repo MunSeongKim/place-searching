@@ -30,7 +30,7 @@ public class GlobalExceptionHandler extends BasicErrorController {
     @Override
     public ModelAndView errorHtml(HttpServletRequest request,
                                         HttpServletResponse response) {
-        logger.error(ToStringBuilder.reflectionToString(request));
+        logger.error(request.toString());
         ModelAndView modelAndView = super.errorHtml(request, response);
         modelAndView.setViewName("error/global");
         return modelAndView;

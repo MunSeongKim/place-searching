@@ -3,18 +3,18 @@ package com.mskim.place_searching.app.auth;
 import com.mskim.place_searching.app.auth.domain.Member;
 import com.mskim.place_searching.app.auth.repository.AuthRepository;
 import com.mskim.place_searching.app.auth.service.AuthService;
-import static org.assertj.core.api.BDDAssertions.then;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
+
+import static org.assertj.core.api.BDDAssertions.then;
 
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 class AuthServiceTest {
     private final AuthService authService;
     private final AuthRepository authRepository;
