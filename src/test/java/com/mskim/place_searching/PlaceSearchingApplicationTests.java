@@ -70,7 +70,7 @@ class PlaceSearchingApplicationTests {
 	@Order(2)
 	void 로그인() throws Exception {
 		mockMvc.perform(formLogin("/auth/validation")
-							.user("id", "chyin370")
+							.user("id", "munseong.kim")
 							.password("password", "test"))
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/"))
@@ -96,8 +96,7 @@ class PlaceSearchingApplicationTests {
 		mockMvc.perform(get("/view/place/search")
 				.characterEncoding("UTF-8")
 				.queryParam("query", "서울역")
-				.queryParam("page", "1")
-				.queryParam("size", "10"))
+				.queryParam("page", "1"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("text/html;charset=UTF-8"))
 				.andExpect(view().name("place/index"))
@@ -144,7 +143,22 @@ class PlaceSearchingApplicationTests {
 	}
 
 	@Test
+	@WithMockUser
 	@Order(7)
+	void 장소_결과_페이지_이동() throws Exception {
+		mockMvc.perform(get("/view/place/search")
+				.characterEncoding("UTF-8")
+				.queryParam("query", "서울역")
+				.queryParam("page", "2"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType("text/html;charset=UTF-8"))
+				.andExpect(view().name("place/index"))
+				.andExpect(model().attributeExists("result_place"))
+				.andReturn();
+	}
+
+	@Test
+	@Order(8)
 	void 로그아웃() throws Exception {
 		mockMvc.perform(logout("/auth/sign_out"))
 				.andExpect(status().isFound())
