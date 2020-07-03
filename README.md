@@ -3,8 +3,8 @@
 
 ## Requirements
 애플리케이션 빌드 또는 실행을 위한 요구 조건:
-- JDK 1.8
-- Maven 3
+- JDK 1.8 <=
+- Maven 4.0.0 <=
 
 ## Running the application locally
 로컬에서 실행 방법
