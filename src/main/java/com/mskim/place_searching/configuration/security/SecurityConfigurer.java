@@ -4,6 +4,8 @@ import com.mskim.place_searching.app.auth.repository.AuthRepository;
 import com.mskim.place_searching.app.auth.domain.Member;
 import com.mskim.place_searching.configuration.security.support.Role;
 import com.mskim.place_searching.configuration.security.support.SecurityConstant;
+import com.mskim.place_searching.configuration.security.support.SignInFailureHandler;
+import com.mskim.place_searching.configuration.security.support.SignInSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,28 +61,26 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic().disable();
-
-//        http.authorizeRequests()
-//                .antMatchers( "/static/**",
-//                             "/**/favicon.ico",
-//                             "/error",
-//                             "/h2/**",
-//                             LOGIN_URL_PATH).permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                    .formLogin().usernameParameter(USERNAME_KEY) // Parameter is received from view
-//                                .passwordParameter(PASSWORD_KEY)
-//                                .loginPage(LOGIN_URL_PATH)
-//                                .loginProcessingUrl(LOGIN_PROCESS_URL_PATH) // Request receiving  from form submit
-//                                .successHandler(new SignInSuccessHandler(SUCCESS_REDIRECT_URL))
-//                                .failureHandler(new SignInFailureHandler(LOGIN_URL_PATH))
-//                .and()
-//                    .logout().logoutUrl(LOGOUT_URL_PATH)
-//                    .clearAuthentication(true) // Authentication object remove from securityContext
-//                    .invalidateHttpSession(true) // HttpSession remove
-//                    .deleteCookies("JSESSIONID")
-//                    .logoutSuccessUrl(LOGIN_URL_PATH);
+        http.authorizeRequests()
+                .antMatchers( "/static/**",
+                             "/**/favicon.ico",
+                             "/error",
+                             "/h2/**",
+                             LOGIN_URL_PATH).permitAll()
+                .anyRequest().authenticated()
+                .and()
+                    .formLogin().usernameParameter(USERNAME_KEY) // Parameter is received from view
+                                .passwordParameter(PASSWORD_KEY)
+                                .loginPage(LOGIN_URL_PATH)
+                                .loginProcessingUrl(LOGIN_PROCESS_URL_PATH) // Request receiving  from form submit
+                                .successHandler(new SignInSuccessHandler(SUCCESS_REDIRECT_URL))
+                                .failureHandler(new SignInFailureHandler(LOGIN_URL_PATH))
+                .and()
+                    .logout().logoutUrl(LOGOUT_URL_PATH)
+                    .clearAuthentication(true) // Authentication object remove from securityContext
+                    .invalidateHttpSession(true) // HttpSession remove
+                    .deleteCookies("JSESSIONID")
+                    .logoutSuccessUrl(LOGIN_URL_PATH);
     }
 
     @Bean
