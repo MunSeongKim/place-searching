@@ -13,11 +13,11 @@
     - `com.mskim.place_searching.PlaceSearchingApplication.main()` 실행
 2. Maven 사용
     - `mvn spring-boot:run`
-> 1, 2번의 방법이 불가능 할 경우 3번 방법으로 진행하시면 됩니다.
-3. Java 사용
-    - `java -jar place-searching-0.0.1-SNAPSHOT.jar`
+> 1, 2번의 방법이 불가능 할 경우 아래의 방법으로 실행하시면 됩니다.
+>
+> `java -jar dist/place-searching-0.0.1-SNAPSHOT.jar`
     
-> 기본 포트인 8080으로 실행됩니다.
+- 실행 후 http://localhost:8080으로 접속 가능합니다.
 
 ## How to use of service
 1. 로그인
@@ -25,7 +25,6 @@
 2. 장소 검색
     - `Input 박스`에 검색어를 입력 후 `Search`버튼으로 검색
 3. 장소 상세 조회
-    - 검색 결과에 마우스를 올리면 현재 조회 가능한 장소에 이펙트가 발생
     - 해당 결과 클릭시 팝업을 통해 상세 결과 확인
         - 결과 내용: `카테고리`, `지번, 도로명 주소`, `연락처`, `지도 정보`
 4. 인기 검색어 조회
