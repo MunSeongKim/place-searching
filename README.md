@@ -21,7 +21,7 @@
 > [place-searching.jar download](https://github.com/MunSeongKim/place-searching/raw/master/dist/place-searching-0.0.1-SNAPSHOT.jar) 후
 > `java -jar place-searching-0.0.1-SNAPSHOT.jar`로 실행합니다.
 >
-> 해당 방법은 JRE 1.8 이상이 설치가 필요합니다.
+> 해당 방법은 `JRE 1.8` 이상이 설치가 필요합니다.
     
 - 실행 후 http://localhost:8080 으로 접속 가능합니다.
 
