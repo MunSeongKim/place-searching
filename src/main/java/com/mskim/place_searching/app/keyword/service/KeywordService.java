@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class KeywordService {
@@ -22,11 +23,13 @@ public class KeywordService {
     @CacheEvict(value = "keyword", allEntries = true)
     @Transactional
     public void storeKeyword(String placeName) {
-        this.keywordRepository.findByValue(placeName)
-                .ifPresentOrElse(
-                        (keyword) -> this.keywordRepository.save(keyword.increaseCount()),
-                        () -> this.keywordRepository.save(Keyword.builder().value(placeName).build())
-                );
+        Optional<Keyword> keywordEntity = this.keywordRepository.findByValue(placeName);
+
+        if (keywordEntity.isPresent()) {
+            this.keywordRepository.save(keywordEntity.get().increaseCount());
+        } else {
+            this.keywordRepository.save(Keyword.builder().value(placeName).build());
+        }
     }
 
     @Cacheable(value = "keyword")
