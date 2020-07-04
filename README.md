@@ -3,8 +3,11 @@
 
 ## Requirements
 애플리케이션 빌드 또는 실행을 위한 요구 조건:
-- JDK 1.9
-- Maven 3
+1. 빌드 및 실행 요구사항
+    - JDK 1.8
+    - Maven 3
+2. 배포 파일 실행 요구사항
+    - JRE 1.8
 
 ## Running the application locally
 로컬에서 실행 방법
@@ -16,9 +19,11 @@
 > 1, 2번의 방법이 불가능 할 경우 아래의 방법으로 실행하시면 됩니다.
 >
 > [place-searching.jar download](https://github.com/MunSeongKim/place-searching/raw/master/dist/place-searching-0.0.1-SNAPSHOT.jar) 후
-> `java -jar place-searching-0.0.1-SNAPSHOT.jar`
+> `java -jar place-searching-0.0.1-SNAPSHOT.jar`로 실행합니다.
+>
+> 해당 방법은 JRE 1.8 이상이 설치가 필요합니다.
     
-- 실행 후 http://localhost:8080으로 접속 가능합니다.
+- 실행 후 http://localhost:8080 으로 접속 가능합니다.
 
 ## How to use of service
 1. 로그인
