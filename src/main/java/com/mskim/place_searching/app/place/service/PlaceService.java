@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,21 +40,37 @@ public class PlaceService {
         this.isNewKeyword = true;
     }
 
-    public Place retrievePlaceDetail(int placeId) {
+    public Place retrievePlaceDetail(int placeId, HttpSession session) {
         Place place = cacheManager.getCache(PLACE_CACHE_NAME)
                                         .get(placeId, Place.class);
 
-        if (place == null) {
-            throw new RuntimeException("PlaceId(" + placeId + ") not fount.");
+        if (session != null && place == null) {
+            String keyword = session.getAttribute("keyword").toString();
+            int page = Integer.parseInt(session.getAttribute("page").toString());
+            List<Place> places = cacheManager.getCache(PLACES_CACHE_NAME)
+                            .get(keyword + "_" + page, List.class);
+
+            for (Place item : places) {
+                if (item.getId() == placeId) {
+                    place = item;
+                }
+            }
         }
 
         return place;
     }
 
-    public PlaceDto retrievePlace(String placeName, int page, int size) {
-        List<Place> places = generatePlace(placeName, page, size);
-        this.placePager = updatePager(placeName, page, size);
+    public PlaceDto retrievePlace(String placeName, int page) {
+        List<Place> places = getPlacesFromApi(placeName, page);
 
+        if (places.isEmpty()) {
+            return PlaceDto.builder()
+                    .places(places)
+                    .pager(null)
+                    .build();
+        }
+
+        this.placePager = updatePager(placeName, page);
         int itemIndex = placePager.getStartItemNumber();
         for (Place place : places) {
             place.assignItemIndex(itemIndex++);
@@ -65,10 +82,10 @@ public class PlaceService {
                 .build();
     }
 
-    public List<Place> generatePlace(String placeName, int page, int size) {
+    public List<Place> getPlacesFromApi(String placeName, int page) {
         this.updateKeywordState(placeName);
 
-        String cacheItemKey = placeName + "_" + page;
+        String cacheItemKey = getPleacesCacheKey(placeName, page);
         Cache cache = cacheManager.getCache(PLACES_CACHE_NAME);
         List<Place> places = cache.get(cacheItemKey, List.class);
 
@@ -76,16 +93,16 @@ public class PlaceService {
             return places;
         }
 
-        MultiValueMap params = createParams(placeName, page, size);
+        MultiValueMap params = createParams(placeName, page);
         Map response = (Map) client.setParams(params).getListAsEntity();
 
-        places = parsePlaceData(response);
+        places = parsePlaceApiResponse(response);
         cache.put(cacheItemKey, places);
 
         return places;
     }
 
-    private List<Place> parsePlaceData(Map response) {
+    private List<Place> parsePlaceApiResponse(Map response) {
         List<Map<String, String>> placeList = (List) response.get("documents");
 
         List<Place> places = new ArrayList<>();
@@ -113,16 +130,16 @@ public class PlaceService {
         return (Map) response.get("meta");
     }
 
-    private PlacePager updatePager(String keyword, int page, int size) {
+    private PlacePager updatePager(String keyword, int page) {
         if (isNewKeyword) {
-            return initializePager(keyword, size);
+            return initializePager(keyword);
         }
 
         return this.placePager.update(page);
     }
 
-    private PlacePager initializePager(String keyword, int size) {
-        MultiValueMap params = createParams(keyword, PlacePager.MAX_PAGE_COUNT, size);
+    private PlacePager initializePager(String keyword) {
+        MultiValueMap params = createParams(keyword, PlacePager.MAX_PAGE_COUNT);
 
         // new pager
         Map<String, Object> response = (Map) client.setParams(params).getListAsEntity();
@@ -131,7 +148,6 @@ public class PlaceService {
         Integer totalItemCount = (Integer) meta.get("pageable_count");
 
         return PlacePager.builder()
-                .displayItemCount(size)
                 .totalItemCount(totalItemCount)
                 .build().update();
     }
@@ -147,13 +163,16 @@ public class PlaceService {
         this.keywordService.storeKeyword(newKeyword);
     }
 
-    private MultiValueMap createParams(String placeName, Integer page, Integer size) {
+    private MultiValueMap createParams(String placeName, Integer page) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("query", placeName);
         params.add("page", page.toString());
-        params.add("size", size.toString());
 
         return params;
+    }
+
+    private String getPleacesCacheKey(String keyword, int page) {
+        return keyword + "_" + page;
     }
 
 }

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @PreAuthorize("isAuthenticated()")
 @RequestMapping(value = "/api/places", produces = "application/json;charset=UTF-8")
@@ -21,7 +23,7 @@ public class PlaceApiController {
     }
 
     @GetMapping(value = "/{id}")
-    public Place getOnePlace(@PathVariable("id") int placeId) {
-        return this.placeService.retrievePlaceDetail(placeId);
+    public Place getOnePlace(@PathVariable("id") int placeId, HttpServletRequest request) {
+        return this.placeService.retrievePlaceDetail(placeId, request.getSession());
     }
 }

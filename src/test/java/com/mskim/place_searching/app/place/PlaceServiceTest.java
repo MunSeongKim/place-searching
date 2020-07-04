@@ -32,25 +32,22 @@ class PlaceServiceTest {
 
     private String keyword;
     private int page;
-    private int size;
 
 
     @BeforeEach
     void setUp() {
         keyword = "서울역";
-        size = 10;
-        page = 1;
     }
 
     @Test
     void PlaceService_장소_조회() {
 
-        PlaceDto dto = placeService.retrievePlace(keyword, page, size);
+        PlaceDto dto = placeService.retrievePlace(keyword, page);
 
         logger.info(() -> "Places: " + dto);
 
         then(dto.getPlaces()).isNotNull();
-        then(dto.getPlaces().size()).isEqualTo(size);
+        then(dto.getPlaces().size()).isEqualTo(15);
 
         then(dto.getPager()).isNotNull();
         then(dto.getPager().getTotalItemCount()).isEqualTo(35);
@@ -59,14 +56,14 @@ class PlaceServiceTest {
 
     @Test
     void PlaceService_장소_조회_검색어_저장() {
-        placeService.retrievePlace(keyword, page, size);
-        placeService.retrievePlace(keyword, page, size);
+        placeService.retrievePlace(keyword, page);
+        placeService.retrievePlace(keyword, page);
         keyword = "남대문";
         // page 초기화 작업 테스트
-        PlaceDto dto = placeService.retrievePlace(keyword, page, size);
+        PlaceDto dto = placeService.retrievePlace(keyword, page);
 
         then(dto.getPlaces()).isNotNull();
-        then(dto.getPlaces().size()).isEqualTo(size);
+        then(dto.getPlaces().size()).isEqualTo(15);
 
         then(dto.getPager()).isNotNull();
         then(dto.getPager().getTotalItemCount()).isEqualTo(45);
@@ -91,9 +88,9 @@ class PlaceServiceTest {
     @Test
     void PlaceService_장소_상세_조회() {
         keyword = "광화문";
-        PlaceDto dto = placeService.retrievePlace(keyword, page, size);
+        PlaceDto dto = placeService.retrievePlace(keyword, page);
         int placeId = dto.getPlaces().get(0).getId();
-        Place place = placeService.retrievePlaceDetail(placeId);
+        Place place = placeService.retrievePlaceDetail(placeId, null);
 
         then(place).isNotNull();
         then(place.getId()).isEqualTo(placeId);

@@ -42,14 +42,13 @@ class PlaceApiControllerTest {
     String placeName1 = "서울역";
     String placeName2 = "남대문";
     int page = 1;
-    int size = 10;
     int placeId = 9113903;
 
     @BeforeEach
     void setUp() {
-        service.retrievePlace(placeName1, page, size);
-        service.retrievePlace(placeName1, page, size);
-        service.retrievePlace(placeName2, page, size);
+        service.retrievePlace(placeName1, page);
+        service.retrievePlace(placeName1, page);
+        service.retrievePlace(placeName2, page);
     }
 
     @Test
