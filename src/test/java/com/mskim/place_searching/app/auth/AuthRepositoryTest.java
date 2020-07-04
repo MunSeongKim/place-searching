@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,14 +13,11 @@ import static org.mockito.ArgumentMatchers.any;
 
 @DataJpaTest
 class AuthRepositoryTest {
-    private final AuthRepository authRepository;
+    @Autowired
+    private AuthRepository authRepository;
 
     private Member member;
 
-    @Autowired
-    public AuthRepositoryTest(AuthRepository authRepository) {
-        this.authRepository = authRepository;
-    }
 
     @BeforeEach
     void setUp() {

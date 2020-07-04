@@ -35,7 +35,9 @@ public class Member {
         this.password = password;
     }
 
-    public void changePassword(String newPassword) {
+    public Member changePassword(String newPassword) {
         this.password = newPassword;
+
+        return this;
     }
 }

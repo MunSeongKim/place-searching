@@ -6,32 +6,27 @@ import com.mskim.place_searching.app.auth.service.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.BDDAssertions.then;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
-
-@DataJpaTest
-@WebAppConfiguration
-class AuthServiceTest {
+@SpringBootTest(classes = AuthService.class)
+@Transactional
+class AuthServiceTest{
     @Autowired
-    ApplicationContext context;
+    private AuthService authService;
 
-    private final AuthService authService;
-    private final AuthRepository authRepository;
-    private final PasswordEncoder passwordEncoder;
+    @MockBean
+    private AuthRepository authRepository;
+
+    @MockBean
+    private PasswordEncoder passwordEncoder;
 
     private Member member;
-
-    public AuthServiceTest(AuthRepository authRepository) {
-        this.authService = context.getBean(AuthService.class);
-        this.authRepository = context.getBean(AuthRepository.class);
-        this.passwordEncoder = new BCryptPasswordEncoder();
-    }
 
     @BeforeEach
     void setUp() {
@@ -42,26 +37,19 @@ class AuthServiceTest {
     }
 
     @Test
-    void AuthService_회원_가입() {
-        this.authService.signUp(member);
+    void AuthService_회원_가입_및_조회() {
+        // given
+        when(authRepository.save(member))
+                .thenReturn(
+                        member.changePassword(passwordEncoder.encode(member.getPassword()))
+                );
 
-        final Member registeredMember = this.authRepository.findByAccount("service_test1").orElse(null);
+        // when
+        boolean result = this.authService.signUp(member);
 
-        then(registeredMember).isNotNull();
-        then(registeredMember.getMemberId()).isNotZero().isGreaterThan(0);
-        then(registeredMember.getAccount()).isEqualTo("service_test1");
-        then(this.passwordEncoder.matches("passwd", registeredMember.getPassword())).isTrue();
+        // then
+        assertTrue(result);
     }
 
-    @Test
-    void AuthService_초기_회원_등록_확인() {
-        String targetAccount = "chyin370";
 
-        final Member initialMember = this.authRepository.findByAccount(targetAccount)
-                .orElse(null);
-
-        then(initialMember).isNotNull();
-        then(initialMember.getMemberId()).isNotZero().isGreaterThan(0);
-        then(this.passwordEncoder.matches("test", initialMember.getPassword())).isTrue();
-    }
 }
