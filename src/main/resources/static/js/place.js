@@ -61,7 +61,10 @@ var getPlaceDetailApi = function (placeId) {
          contentType : 'application/json; charset=utf-8'
     }).done(function (data, status, xhr) {
         console.log("Get a detail of place");
-        console.log(data);
+
+        if (data == null) {
+            alert("일시적인 문제로 실행할 수 없습니다.\n 잠시 후 다시 실행해주세요.");
+        }
 
         let template = document.getElementById('placeDetailModal').innerHTML;
         let rendered = Mustache.render(template, data);
