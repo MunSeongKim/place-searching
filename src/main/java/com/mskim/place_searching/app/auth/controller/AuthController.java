@@ -25,7 +25,6 @@ public class AuthController {
     @GetMapping("/sign_in")
     public ModelAndView signIn(@RequestParam(value = "error", required = false) Boolean error,
                          HttpServletRequest request) {
-        System.out.println("SEssion ======= " + request.getSession());
         ModelMap model = authService.getModelFromSession(request.getSession());
         return new ModelAndView("auth/sign_in", model);
     }

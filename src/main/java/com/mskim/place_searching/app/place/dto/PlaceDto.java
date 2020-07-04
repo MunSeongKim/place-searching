@@ -1,6 +1,6 @@
 package com.mskim.place_searching.app.place.dto;
 
-import com.mskim.place_searching.app.place.support.page.PlacePager;
+import com.mskim.place_searching.app.place.dto.page.PlacePager;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

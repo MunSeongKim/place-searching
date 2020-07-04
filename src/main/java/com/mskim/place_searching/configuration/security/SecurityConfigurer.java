@@ -1,7 +1,7 @@
 package com.mskim.place_searching.configuration.security;
 
-import com.mskim.place_searching.app.auth.repository.AuthRepository;
 import com.mskim.place_searching.app.auth.domain.Member;
+import com.mskim.place_searching.app.auth.repository.AuthRepository;
 import com.mskim.place_searching.configuration.security.support.Role;
 import com.mskim.place_searching.configuration.security.support.SecurityConstant;
 import com.mskim.place_searching.configuration.security.support.SignInFailureHandler;
@@ -50,7 +50,6 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        // SecurityFilterChain ignores check to static resources path
         web.ignoring().antMatchers("/static/**", "/**/favicon.ico");
     }
 

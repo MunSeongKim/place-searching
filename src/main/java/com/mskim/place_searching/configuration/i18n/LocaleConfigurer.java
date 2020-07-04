@@ -13,6 +13,9 @@ import java.util.Locale;
 
 @Configuration
 public class LocaleConfigurer implements WebMvcConfigurer {
+    private static final String COOKIE_NAME_LOCALE = "LOCALE";
+    private static final String LOCALE_PARAM = "lang";
+
     @Bean
     public ReloadableResourceBundleMessageSource messageSource() {
         ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
@@ -26,14 +29,14 @@ public class LocaleConfigurer implements WebMvcConfigurer {
     public LocaleResolver localeResolver() {
         CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
         cookieLocaleResolver.setDefaultLocale(Locale.KOREAN);
-        cookieLocaleResolver.setCookieName("LOCALE");
+        cookieLocaleResolver.setCookieName(COOKIE_NAME_LOCALE);
         return cookieLocaleResolver;
     }
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-        localeChangeInterceptor.setParamName("lang");
+        localeChangeInterceptor.setParamName(LOCALE_PARAM);
         return localeChangeInterceptor;
     }
 

@@ -4,7 +4,7 @@ import com.mskim.place_searching.app.keyword.service.KeywordService;
 import com.mskim.place_searching.app.place.dto.Place;
 import com.mskim.place_searching.app.place.dto.PlaceDto;
 import com.mskim.place_searching.app.place.support.client.KakaoMapSearchRestClient;
-import com.mskim.place_searching.app.place.support.page.PlacePager;
+import com.mskim.place_searching.app.place.dto.page.PlacePager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -82,7 +82,7 @@ public class PlaceService {
                 .build();
     }
 
-    public List<Place> getPlacesFromApi(String placeName, int page) {
+    private List<Place> getPlacesFromApi(String placeName, int page) {
         this.updateKeywordState(placeName);
 
         String cacheItemKey = getPleacesCacheKey(placeName, page);

@@ -22,6 +22,8 @@ import java.util.Map;
 public class GlobalExceptionHandler extends BasicErrorController {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    private static final String GLOBAL_ERROR_VIEW_NAME = "error/global";
+
     public GlobalExceptionHandler(ErrorAttributes errorAttributes, ServerProperties errorProperties, List<ErrorViewResolver> errorViewResolvers) {
         super(errorAttributes, errorProperties.getError(), errorViewResolvers);
     }
@@ -31,7 +33,7 @@ public class GlobalExceptionHandler extends BasicErrorController {
                                         HttpServletResponse response) {
         logger.error(request.toString());
         ModelAndView modelAndView = super.errorHtml(request, response);
-        modelAndView.setViewName("error/global");
+        modelAndView.setViewName(GLOBAL_ERROR_VIEW_NAME);
         return modelAndView;
     }
 

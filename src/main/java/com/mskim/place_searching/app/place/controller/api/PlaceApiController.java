@@ -22,7 +22,7 @@ public class PlaceApiController {
         this.placeService = placeService;
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}", produces = "application/json;charset=UTF-8")
     public Place getOnePlace(@PathVariable("id") int placeId, HttpServletRequest request) {
         return this.placeService.retrievePlaceDetail(placeId, request.getSession());
     }

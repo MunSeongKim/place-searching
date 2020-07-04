@@ -1,8 +1,18 @@
 package com.mskim.place_searching.app.keyword.domain;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 
 @Entity
 @Table(name = "t_search_keyword")
@@ -23,16 +33,12 @@ public class Keyword {
     @Builder
     public Keyword(String value) {
         this.value = value;
+        this.count = 1;
     }
 
     public Keyword increaseCount() {
         this.count = this.count + 1;
 
         return this;
-    }
-
-    @PrePersist
-    private void setDefaultCount() {
-        this.count = (this.count == null) ? 1 : this.count;
     }
 }

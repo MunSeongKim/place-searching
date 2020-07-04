@@ -22,13 +22,13 @@ public class KeywordService {
 
     @CacheEvict(value = "keyword", allEntries = true)
     @Transactional
-    public void storeKeyword(String placeName) {
+    public boolean storeKeyword(String placeName) {
         Optional<Keyword> keywordEntity = this.keywordRepository.findByValue(placeName);
 
         if (keywordEntity.isPresent()) {
-            this.keywordRepository.save(keywordEntity.get().increaseCount());
+            return this.keywordRepository.save(keywordEntity.get().increaseCount()) != null ? true : false;
         } else {
-            this.keywordRepository.save(Keyword.builder().value(placeName).build());
+            return this.keywordRepository.save(Keyword.builder().value(placeName).build()) != null ? true : false;
         }
     }
 
